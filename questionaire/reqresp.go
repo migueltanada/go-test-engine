@@ -18,10 +18,27 @@ type (
 	}
 
 	GetSetRequest struct {
-		Id string `json:"id"`
+		SetID string `json:"setId"`
 	}
 	GetSetResponse struct {
 		Name string `json:"name"`
+	}
+
+	CreateQnaRequest struct {
+		SetID    string `json:"setId"`
+		QnaID    string `json:"questionId,omitempty"`
+		Question string `json:"question"`
+		Choice   Choice `json:"choices"`
+	}
+	CreateQnaResponse struct {
+		Ok string `json:"ok"`
+	}
+
+	GetQnaRequest struct {
+		QnaID string `json:"questionId"`
+	}
+	GetQnaResponse struct {
+		Question string `json:"question"`
 	}
 )
 
@@ -38,12 +55,31 @@ func decodeSetReq(ctx context.Context, r *http.Request) (interface{}, error) {
 	return req, nil
 }
 
-func decodeNameReq(ctx context.Context, r *http.Request) (interface{}, error) {
+func decodeSetNameReq(ctx context.Context, r *http.Request) (interface{}, error) {
 	var req GetSetRequest
 	vars := mux.Vars(r)
 
 	req = GetSetRequest{
-		Id: vars["id"],
+		SetID: vars["setId"],
+	}
+	return req, nil
+}
+
+func decodeQnaReq(ctx context.Context, r *http.Request) (interface{}, error) {
+	var req CreateQnaRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+func decodeQnaQuestionReq(ctx context.Context, r *http.Request) (interface{}, error) {
+	var req GetQnaRequest
+	vars := mux.Vars(r)
+
+	req = GetQnaRequest{
+		QnaID: vars["questionId"],
 	}
 	return req, nil
 }

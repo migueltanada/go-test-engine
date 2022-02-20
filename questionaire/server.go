@@ -18,9 +18,21 @@ func NewHTTPServer(ctx context.Context, endpoints Endpoints) http.Handler {
 		encodeResponse,
 	))
 
-	r.Methods("GET").Path("/set/{id}").Handler(httptransport.NewServer(
+	r.Methods("GET").Path("/set/{setId}").Handler(httptransport.NewServer(
 		endpoints.GetSet,
-		decodeNameReq,
+		decodeSetNameReq,
+		encodeResponse,
+	))
+
+	r.Methods("POST").Path("/question").Handler(httptransport.NewServer(
+		endpoints.CreateQna,
+		decodeQnaReq,
+		encodeResponse,
+	))
+
+	r.Methods("GET").Path("/question/{qnaId}").Handler(httptransport.NewServer(
+		endpoints.GetQna,
+		decodeQnaQuestionReq,
 		encodeResponse,
 	))
 
